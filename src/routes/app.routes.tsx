@@ -1,19 +1,35 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from "@react-navigation/stack";
 
-import { Client } from '../pages/client';
-import { Sync } from '../pages/sync';
+import { Client } from '../pages/cliente/client';
+import { Sync } from '../pages/sync/sync';
+import { RegisterClient } from '../pages/registerClient/registerClient';
 
-import { cores } from '../style/styles';
+import { cores } from '../pages/cliente/style';
 
-const { Navigator, Screen } = createBottomTabNavigator();
+//Configurações de rotas
+
+const ClientStack = createStackNavigator();
+
+export function ClientTabStack(){
+    return (
+        <ClientStack.Navigator>
+            <ClientStack.Screen name="Clientes" component={Client}
+             />
+            <ClientStack.Screen name="RegisterClient" component={RegisterClient} options={{title: 'Novo cliente'}}/>
+        </ClientStack.Navigator>
+    )
+}
 
 
+//Botões de navegação
+const Tab = createBottomTabNavigator();
 export function AppRoutes(){
     return(
         <NavigationContainer>
-            <Navigator screenOptions={{
+            <Tab.Navigator screenOptions={{
                 tabBarActiveTintColor: cores.branco,
                 tabBarInactiveTintColor: cores.cinza,
                 tabBarActiveBackgroundColor: cores.branco,
@@ -38,9 +54,15 @@ export function AppRoutes(){
                     display:'none',
                 }
                 }}>
-                <Screen name="Cliente" component={Client} />
-                <Screen name="Sync" component={Sync}/>
-            </Navigator>
-        </NavigationContainer>
+                <Tab.Screen name="Cliente" component={ClientTabStack} 
+                options={{
+                    headerTransparent: true,
+                    headerShown: false,
+                }}/>
+                <Tab.Screen name="Sync" component={Sync}/>
+            </Tab.Navigator>
+            </NavigationContainer>
+
     )
 }
+
