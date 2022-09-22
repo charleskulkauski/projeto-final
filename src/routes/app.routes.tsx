@@ -9,22 +9,15 @@ import { RegisterClient } from '../pages/registerClient/registerClient';
 
 import { cores } from '../pages/cliente/style';
 
+
+
+
+
+
+
 //Configurações de rotas
 
-const ClientStack = createStackNavigator();
-
-export function ClientTabStack(){
-    return (
-        <ClientStack.Navigator>
-            <ClientStack.Screen name="Clientes" component={Client}
-             />
-            <ClientStack.Screen name="RegisterClient" component={RegisterClient} options={{title: 'Novo cliente'}}/>
-        </ClientStack.Navigator>
-    )
-}
-
-
-//Botões de navegação
+//Botões de navegação parte de baixo
 const Tab = createBottomTabNavigator();
 export function AppRoutes(){
     return(
@@ -65,4 +58,21 @@ export function AppRoutes(){
 
     )
 }
+
+//Navegação adicionar cliente
+const ClientStack = createStackNavigator();
+
+export function ClientTabStack(){
+    return (
+        <ClientStack.Navigator>
+            <ClientStack.Screen name="Clientes" component={Client}/>
+            <ClientStack.Screen name="RegisterClient" component={RegisterClient} 
+            options={{title: 'Novo cliente', }}/>
+        </ClientStack.Navigator>
+    )
+}
+
+
+
+
 
