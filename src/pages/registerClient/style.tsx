@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { FlipInEasyX } from 'react-native-reanimated';
 
 export const cores = {
     roxo: '#6C63FF',
@@ -21,9 +20,9 @@ export default StyleSheet.create({
         borderBottomColor: cores.roxo,
         borderBottomWidth: 1,
         width: "90%",
-        marginTop: 10,
+        marginBottom: 10,
         padding: 10,
-        height: 50,
+        height: 45,
         marginLeft: 'auto',
         marginRight: 'auto',
     },
@@ -31,16 +30,34 @@ export default StyleSheet.create({
     txtRadio: {
         width: "90%",
         marginTop: 20,
-        borderColor: '#000',
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginBottom: 7,
         height: 25,
         color: cores.roxo,
         fontSize: 14,
         fontWeight: 'bold',
-        borderColor: '#000',
-        borderWidth: 4,
 
+    },
+
+    viewSwitch: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '90%',
+        height: 80,
+        marginTop: 20,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        borderRadius: 20,
+        backgroundColor: '#e0e0e059'
+    },
+
+    txtSwitch:{
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: cores.roxo,
     },
 
     button: {
@@ -49,19 +66,21 @@ export default StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginBottom: 20,
-        marginTop: 50,
+        marginTop: 25,
         borderRadius: 15,
-        backgroundColor: cores.roxo,
+        borderColor: cores.roxo,
+        borderWidth: 2,
+        backgroundColor: cores.branco,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#000',
 
     },
 
     textButton: {
         fontSize: 20,
-        color: cores.branco,
+        fontWeight: 'bold',
+        color: cores.roxo,
     }
 })
 

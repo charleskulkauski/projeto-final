@@ -1,40 +1,53 @@
 import React, { useState } from "react";
-import { 
-    ScrollView, 
-    Text, 
-    TextInput, 
-    TouchableOpacity, 
-    Switch } from "react-native";
+import style, { cores } from "./style";
+import Radio from "../../component/Radio";
+import CheckBox from "../../component/Checkbox/index";
+import {
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Switch,
+    View
+} from "react-native";
 
-import style, {cores} from "./style";
 
-//Teste de radio
-import Radio from "../../component/Radio"
-///////////////////////////////////////////
+//TESTE CAMPO HORÁRIO
 
-export function RegisterClient(){
+
+
+export function RegisterClient() {
+
     const [selected, setSelected] = useState(0);
     const [isEnabled, setIsEnabled] = useState(false);
     const alternarSwitch = () => {
         setIsEnabled(previousState => !previousState);
     }
-    
-    return(
-        <ScrollView  style={{flex:1, backgroundColor: cores.branco}}>
+
+    const optionsCheckBox = [
+        { text: 'Segunda-Feira', id: 1 },
+        { text: 'Terça-Feira', id: 2 },
+        { text: 'Quarta-Feira', id: 3 },
+        { text: 'Quinta-Feira', id: 4 },
+        { text: 'Sexta-Feira', id: 5 },
+    ]
+
+    return (
+        <ScrollView style={{ flex: 1, backgroundColor: cores.branco }}>
             <Text style={style.label}>Registrar</Text>
 
             <TextInput style={style.input} placeholder="Nome"></TextInput>
 
             <TextInput style={style.input} placeholder="Sobrenome"></TextInput>
 
-            <TextInput 
-                style={style.input} 
+            <TextInput
+                style={style.input}
                 placeholder="Telefone"
                 keyboardType="numeric"
             ></TextInput>
-                        
+
             <TextInput
-                style={style.input} 
+                style={style.input}
                 placeholder="Telefone whatsapp"
                 keyboardType="numeric"
             ></TextInput>
@@ -42,75 +55,68 @@ export function RegisterClient(){
             <TextInput style={style.input} placeholder="E-mail"></TextInput>
 
             <Text style={style.txtRadio}>Dias para entrega</Text>
-            <Radio
-             //posicao selecionada
-             selected = {
-                selected
-            }
 
 
-            //Options recebe um array das informações
-            options = {
-                ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira']
-            } 
+            <CheckBox
+                options={optionsCheckBox} onChange={op => alert(op)}
+            />
 
-            //Hoizontal recebe true
-            horizontal = {
-                false
-            }
 
-            onChangeSelect = {(opt, i) => {
-                const optionSelected = (i)
-                setSelected(i)
-            }
-            }/>
+            <TextInput style={style.input} placeholder="Horário de entrega">
 
-            <TextInput style={style.input} placeholder="Horário de entrega"></TextInput>
+
+
+            </TextInput>
 
             <TextInput style={style.input} placeholder="Preferência de contato"></TextInput>
 
             <Text style={style.txtRadio}>Tipo de estabelecimento</Text>
 
             <Radio
-            //##Tratar ambos valores do radio para enviar para o banco-------------------------------------------Tarefa
+                //##Tratar ambos valores do radio para enviar para o banco-------------------------------------------Tarefa
 
-            //posicao selecionada
-            selected = {
-                selected
-            }
+                //posicao selecionada
+                selected={
+                    selected
+                }
 
 
-            //Options recebe um array das informações
-            options = {
-                ['Residencial', 'Comercial']
-            } 
+                //Options recebe um array das informações
+                options={
+                    ['Residencial', 'Comercial']
+                }
 
-            //Hoizontal recebe true
-            horizontal = {
-                true
-            }
+                //Hoizontal recebe true
+                horizontal={
+                    true
+                }
 
-            onChangeSelect = {(opt, i) => {
-                const optionSelected = (i)
-                setSelected(i)
-            }
-            }/>
+                onChangeSelect={(opt, i) => {
+                    const optionSelected = (i)
+                    setSelected(i)
+                }
+                } />
 
-            <Text style= {style.txtRadio}> Entrega Rastreável?
+            <View style={style.viewSwitch}>
+                <Text style={style.txtSwitch}>Entrega Rastreável </Text>
                 <Switch
                     //Cor barrinha de trás
-                    trackColor= {{ false: cores.cinza, true: cores.cinza}}
+                    trackColor={{ false: cores.cinza, true: cores.cinza }}
 
                     //Cor bolinha da frente
-                    thumbColor= {!isEnabled ? cores.branco : cores.roxo}
-                    onValueChange= {alternarSwitch}
-                    value= {isEnabled}
+                    thumbColor={!isEnabled ? cores.branco : cores.roxo}
+                    onValueChange={alternarSwitch}
+                    value={isEnabled}
                 />
-            </Text>
-           
+            </View>
+
+
+
+
+
             <TouchableOpacity style={style.button}>
                 <Text style={style.textButton}>Salvar</Text>
             </TouchableOpacity>
         </ScrollView>
     )
-}""
+}

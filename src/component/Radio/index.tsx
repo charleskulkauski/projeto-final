@@ -2,7 +2,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from 'react-native';
 import style from "./style";
-import { StyleSheet } from 'react-native';
 
 const Radio = ({
     options = [],
@@ -21,15 +20,14 @@ const Radio = ({
                             //Arrow function
                             () => onChangeSelect(opt, index)
                         }
-                        //Referência do estilo aplcado no style.tsx e importado pra cá
-                        style={[style.optContainer, {marginLeft: horizontal ? 50 : 35, marginTop: horizontal ? 0 : 15}]}
+                        //Referência do estilo aplicado no style.tsx e importado pra cá
+                        style={[style.optContainer, {marginLeft: horizontal ? 50 : 35, marginBottom: horizontal ? 0 : 12}]}
                     >
 
                         <View
                         //Circula de fora envolve o circulo selecionado de dentro
                             style={style.outlineCircle}
                         >
-                            
                             {selected == index && <View style={style.innerCircle} />}
                         </View>
 
