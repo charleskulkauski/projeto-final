@@ -4,7 +4,7 @@ import style from './style';
 
 
 
-const CheckBox = ({ options = [], onChange }) => {
+const CheckBox = ({ options = [], onChange, multiple = false }) => {
     const [selected, setSelected] = useState([])
 
     
@@ -18,7 +18,7 @@ const CheckBox = ({ options = [], onChange }) => {
         if (index !== -1) {
             arrSelecteds.splice(index, 1);
         } else {
-            arrSelecteds.push(id);
+            multiple ? arrSelecteds.push(id) : (arrSelecteds = [id]);
         }
 
         setSelected(arrSelecteds)

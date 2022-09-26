@@ -40,6 +40,14 @@ export default StyleSheet.create({
 
     },
 
+    buttonTime: {
+        width:'80%', 
+        height: 50, 
+        marginLeft: 'auto',
+        marginRight:'auto', 
+        marginTop: 20
+    },
+
     viewSwitch: {
         display: 'flex',
         justifyContent: 'space-between',
