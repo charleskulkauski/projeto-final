@@ -13,6 +13,7 @@ import {
     Button
 
 } from "react-native";
+import firestore from '@react-native-firebase/firestore';
 
 export function RegisterClient() {
     //Button - Residencial ou comercial
@@ -33,11 +34,7 @@ export function RegisterClient() {
         { text: 'Sexta-Feira', id: 5 },
     ]
 
-    //Hora da entrega
-    const [date, setDate] = useState(new Date())
-    const [open, setOpen] = useState(false)
-
-    //Preferência de contato
+    //Options preferência de contato
     const optionsPreferenciaContato = [
         { text: 'E-mail', id: 1 },
         { text: 'Fax', id: 2 },
@@ -45,32 +42,96 @@ export function RegisterClient() {
         { text: 'Telefonema', id: 4 },
     ]
 
+    //Options Telefone whatsapp
+    const optionsTelefoneWhatsApp = [
+        { text: 'O número de telefone é WhatsApp?', id: 1 },
+    ]
+
+    //Hora da entrega
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
+
+    
+
+    //Salvando estados, valores inputs textos
+    const [nome, setNome] = useState('');
+    const [sobrenome, setSobrenome] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [email, setEmail] = useState('');
+
+    //Salvando estados, valores radio
+    const [diaEntrega, setDiaEntrega] = useState('');
+    const [horaEntrega, setHoraEntrega] = useState('');
+    const [estabelecimento, setEstabeleciomento] = useState('');
+    const [preferenciaContato, setPreferenciaContato] = useState('');
+    const [entregaRastreavel, setEntregaRastreavel] = useState('');
+    const [telefoneWhatsApp, setTelefoneWhatsApp] = useState<boolean>(false);
+
+    //validando WhatsApp
+    function setWhatsApp(valid: boolean = true){
+        if (valid) {
+            const cliFrom = getValues();
+            setValue('whatsapp', cliForm.telefone);
+            setTelefoneWhatsApp(valid);
+        }else{
+            setValue('whatsapp', '');
+            setTelefoneWhatsApp(false)
+        }
+    }
+
+    function enviarForm() {
+        firestore().collection('dadosCliente').add({
+            nome: nome,
+            sobrenome: sobrenome,
+            telefone: telefone,
+            email: email,
+        })
+    }
+
     return (
         <ScrollView style={{ flex: 1, backgroundColor: cores.branco }}>
             <Text style={style.label}>Registrar</Text>
 
-            <TextInput style={style.input} placeholder="Nome"></TextInput>
+            <TextInput
+                style={style.input}
+                placeholder="Nome"
+                onChangeText={(value: string) => setNome(value)}>
+            </TextInput>
 
-            <TextInput style={style.input} placeholder="Sobrenome"></TextInput>
+            <TextInput
+                style={style.input}
+                placeholder="Sobrenome"
+                onChangeText={(value: string) => setSobrenome(value)}>
+            </TextInput>
 
             <TextInput
                 style={style.input}
                 placeholder="Telefone"
                 keyboardType="numeric"
+                onChangeText={(value: string) => setTelefone(value)}
+            ></TextInput>
+            <CheckBox
+                style={{marginTop: 15}}
+                options={optionsTelefoneWhatsApp}
+                onChange={op => setTelefoneWhatsApp(true)}
+                multiple
+            />
+            
+            <TextInput
+                style={style.input}
+                placeholder="Número Whatsapp"
+                keyboardType="numeric"
             ></TextInput>
 
             <TextInput
                 style={style.input}
-                placeholder="Telefone whatsapp"
-                keyboardType="numeric"
-            ></TextInput>
-
-            <TextInput style={style.input} placeholder="E-mail"></TextInput>
+                placeholder="E-mail"
+                onChangeText={(value: string) => setEmail(value)}>
+            </TextInput>
 
             <Text style={style.txtRadio}>Dias para entrega</Text>
-
             <CheckBox
-                options={optionsCheckBox} 
+                options={optionsCheckBox}
                 onChange={op => alert(op)}
                 multiple
             />
@@ -93,16 +154,15 @@ export function RegisterClient() {
                         }}
                     />
                 </>
-                <Text style={{marginTop: 10}} >A entrega ocorrerá as {date.getHours()}:{date.getMinutes()}</Text>
+                <Text style={{ marginTop: 10 }} >A entrega ocorrerá as {date.getHours()}:{date.getMinutes()}</Text>
             </View>
-            
-            <Text style={[style.txtRadio, {marginTop: 50}]}>Preferência de contato</Text>
+
+            <Text style={[style.txtRadio, { marginTop: 50 }]}>Preferência de contato</Text>
             <CheckBox
                 options={optionsPreferenciaContato} onChange={op => alert(op)}
             />
 
             <Text style={style.txtRadio}>Tipo de estabelecimento</Text>
-
             <Radio
                 //##Tratar ambos valores do radio para enviar para o banco-------------------------------------------Tarefa
 
@@ -141,7 +201,11 @@ export function RegisterClient() {
                 />
             </View>
 
-            <TouchableOpacity style={style.button}>
+
+
+
+            <TouchableOpacity style={style.button} //OnPress pra redirecionar para home
+            >
                 <Text style={style.textButton}>Salvar</Text>
             </TouchableOpacity>
         </ScrollView>
