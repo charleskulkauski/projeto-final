@@ -7,8 +7,6 @@ import style from './style';
 const CheckBox = ({ options = [], onChange, multiple = false }) => {
     const [selected, setSelected] = useState([])
 
-    
-
     function toogle(id) {
         let index = selected.findIndex(
             (i) => i === id

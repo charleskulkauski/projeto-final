@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import style, { cores } from "./style";
+import { useForm, Controller } from "react-hook-form";
 import Radio from "../../component/Radio";
 import CheckBox from "../../component/Checkbox/index";
 import DatePicker from 'react-native-date-picker'
@@ -44,16 +45,30 @@ export function RegisterClient() {
 
     //Options Telefone whatsapp
     const optionsTelefoneWhatsApp = [
-        { text: 'O número de telefone é WhatsApp?', id: 1 },
+        { text: 'Este número de telefone é do WhatsApp?', id: 1 },
     ]
 
     //Hora da entrega
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
-    
+    //Pegando informações das inputs manualmente(retirar após utilizar Hook Form)
+    function handleSignIn() {
+        const data = {
+            nome,
+            sobrenome,
+            telefone,
+            email,
+            date,
 
-    //Salvando estados, valores inputs textos
+        }
+
+        console.log(data)
+    }
+
+
+
+    //-----------COMO ENVIAR PARA O FIREBASE
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [telefone, setTelefone] = useState('');
@@ -67,17 +82,23 @@ export function RegisterClient() {
     const [entregaRastreavel, setEntregaRastreavel] = useState('');
     const [telefoneWhatsApp, setTelefoneWhatsApp] = useState<boolean>(false);
 
-    //validando WhatsApp
-    function setWhatsApp(valid: boolean = true){
-        if (valid) {
-            const cliFrom = getValues();
-            setValue('whatsapp', cliForm.telefone);
-            setTelefoneWhatsApp(valid);
-        }else{
-            setValue('whatsapp', '');
-            setTelefoneWhatsApp(false)
-        }
+    //----------------------------------------------------------------Retirar após hook form
+
+    //TESTE HOOK FORM ----------------------------------------------------------------------
+
+    type FormData = {
+        nome: string;
+        sobrenome: string;
+        telefone: string;
+        telefoneWhatsApp: string;
+        email: string;
     }
+    const { control, handleSubmit } = useForm<FormData>();
+    const onSubmit = (data: FormData) => console.log(data);
+
+
+    //-------------------------------------------------------------------Testehookform
+
 
     function enviarForm() {
         firestore().collection('dadosCliente').add({
@@ -92,43 +113,89 @@ export function RegisterClient() {
         <ScrollView style={{ flex: 1, backgroundColor: cores.branco }}>
             <Text style={style.label}>Registrar</Text>
 
-            <TextInput
-                style={style.input}
-                placeholder="Nome"
-                onChangeText={(value: string) => setNome(value)}>
-            </TextInput>
+            <Controller
+                control={control}
+                name="nome"
+                render={({ field: { value, onChange } }) => (
 
-            <TextInput
-                style={style.input}
-                placeholder="Sobrenome"
-                onChangeText={(value: string) => setSobrenome(value)}>
-            </TextInput>
+                    <TextInput
+                        style={style.input}
+                        placeholder="Nome"
+                        value={value}
+                        onChangeText={onChange} />
 
-            <TextInput
-                style={style.input}
-                placeholder="Telefone"
-                keyboardType="numeric"
-                onChangeText={(value: string) => setTelefone(value)}
-            ></TextInput>
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="sobrenome"
+                render={({ field: { value, onChange } }) => (
+
+                    <TextInput
+                        style={style.input}
+                        placeholder="Sobrenome"
+                        value={value}
+                        onChangeText={onChange} />
+
+                )}
+            />
+
+            <Controller
+                control={control}
+                name="telefone"
+                render={({ field: { value, onChange } }) => (
+
+                    <TextInput
+                        style={style.input}
+                        placeholder="Telefone"
+                        value={value}
+                        keyboardType="numeric"
+                        onChangeText={onChange} />
+
+                )}
+            />
+
+
             <CheckBox
-                style={{marginTop: 15}}
+                style={{ marginTop: 15 }}
                 options={optionsTelefoneWhatsApp}
                 onChange={op => setTelefoneWhatsApp(true)}
+                //onChange={op => setTelefoneWhatsApp(true) {(value:boolean)}}
                 multiple
             />
+
+            <Controller
+                control={control}
+                name="telefoneWhatsApp"
+                render={({ field: { value, onChange } }) => (
+
+                    <TextInput
+                        style={style.input}
+                        placeholder="Número de telefone do WhatsApp"
+                        value={value}
+                        keyboardType="numeric"
+                        onChangeText={onChange}
+                    />
+
+                )}
+            />
+
+
+            <Controller
+                control={control}
+                name="email"
+                render={({ field: { value, onChange } }) => (
+
+                    <TextInput
+                        style={style.input}
+                        placeholder="Email"
+                        value={value}
+                        onChangeText={onChange} />
+
+                )}
+            />
             
-            <TextInput
-                style={style.input}
-                placeholder="Número Whatsapp"
-                keyboardType="numeric"
-            ></TextInput>
-
-            <TextInput
-                style={style.input}
-                placeholder="E-mail"
-                onChangeText={(value: string) => setEmail(value)}>
-            </TextInput>
-
             <Text style={style.txtRadio}>Dias para entrega</Text>
             <CheckBox
                 options={optionsCheckBox}
@@ -204,7 +271,7 @@ export function RegisterClient() {
 
 
 
-            <TouchableOpacity style={style.button} //OnPress pra redirecionar para home
+            <TouchableOpacity style={style.button} onPress={handleSubmit(onSubmit)}
             >
                 <Text style={style.textButton}>Salvar</Text>
             </TouchableOpacity>
