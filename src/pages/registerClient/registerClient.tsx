@@ -15,7 +15,6 @@ import {
 
 } from "react-native";
 import firestore from '@react-native-firebase/firestore';
-import { alertClasses } from "@mui/material";
 
 export function RegisterClient({ navigation }) {
     //Button - Residencial ou comercial
@@ -92,10 +91,10 @@ export function RegisterClient({ navigation }) {
 
     const [preferenciaContato, setPreferenciaContato] = useState('')
     function infoPreferenciaContato(data: any) {
-        setPreferenciaContato(data);
+        setPreferenciaContato(data);  
     }
 
-    const [statusEntrega, setStatusEntrega] = useState<Boolean>(false)
+    const [statusEntrega, setStatusEntrega] = useState<Boolean> (false)
     function infoStatus(data: any) {
         if (data == 1) {
             setStatusEntrega(true);
@@ -108,37 +107,26 @@ export function RegisterClient({ navigation }) {
     }
 
     function enviarForm() {
-        if (nome.length 
-            || sobrenome.length
-            || email.length
-            || telefone.length 
-            || numeroTelefoneWhatsApp.length 
-            < 1) {
-            Alert.alert('Alguns campos precisam de atenção')
-        } else {
-            firestore()
-                .collection('dadosCliente')
-                .add({
-                    nome: nome,
-                    sobrenome: sobrenome,
-                    telefone: telefone,
-                    email: email,
-                    numeroTelefoneWhatsApp: numeroTelefoneWhatsApp,
-                    tipoEstabelecimento: tipoEstabelecimento,
-                    telefoneWhatsApp: telefoneWhatsApp,
-                    diaEntrega: diaEntrega,
-                    preferenciaContato: preferenciaContato,
-                    entregaRastreavel: entregaRastreavel,
-                    statusEntrega: statusEntrega,
-                    horaEntrega: horaEntrega
+        firestore()
+            .collection('dadosCliente')
+            .add({
+                nome: nome,
+                sobrenome: sobrenome,
+                telefone: telefone,
+                email: email,
+                numeroTelefoneWhatsApp: numeroTelefoneWhatsApp,
+                tipoEstabelecimento: tipoEstabelecimento,
+                telefoneWhatsApp: telefoneWhatsApp,
+                diaEntrega: diaEntrega,
+                preferenciaContato: preferenciaContato,
+                entregaRastreavel: entregaRastreavel,
+                statusEntrega: statusEntrega,
+                horaEntrega: horaEntrega
 
-                })
-                .then(() => {
-                    Alert.alert('Cadastrado com sucesso!', 'Cadastrado');
-                });
-
-        }
-
+            })
+            .then(() => {
+                Alert.alert('Cadastrado com sucesso!', 'Cadastrado');
+            });
     }
 
     return (
@@ -260,8 +248,8 @@ export function RegisterClient({ navigation }) {
                 <Text style={style.textButton}>Salvar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={style.buttonFechar} onPress={() => { navigation.goBack('client') }}>
-                <Text style={style.textButtonFechar} onPress={() => { navigation.goBack('client') }}>Fechar</Text>
+            <TouchableOpacity style={style.buttonFechar} onPress={() =>{navigation.goBack('client')}}>
+                <Text style={style.textButtonFechar} onPress= {() =>{navigation.goBack('client')}}>Fechar</Text>
             </TouchableOpacity>
         </ScrollView>
     )
