@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import style, { cores } from "./style";
-import { useForm, Controller } from "react-hook-form";
 import Radio from "../../component/Radio";
 import CheckBox from "../../component/Checkbox/index";
 import DatePicker from 'react-native-date-picker'
@@ -11,36 +10,42 @@ import {
     TouchableOpacity,
     Switch,
     View,
-    Button
+    Button,
+    Alert
 
 } from "react-native";
 import firestore from '@react-native-firebase/firestore';
+import { alertClasses } from "@mui/material";
 
-export function RegisterClient() {
+export function RegisterClient({ navigation }) {
     //Button - Residencial ou comercial
     const [selected, setSelected] = useState(0);
     const [isEnabled, setIsEnabled] = useState(false);
 
     //Toogle - Entrega rastrável
+    const [entregaRastreavel, setEntregaRastreavel] = useState<Boolean>(false)
     const alternarSwitch = () => {
         setIsEnabled(previousState => !previousState);
+        if (!isEnabled) {
+            setEntregaRastreavel(true);
+        }
     }
 
     //CheckBox - Dias da entrega
     const optionsCheckBox = [
-        { text: 'Segunda-Feira', id: 1 },
-        { text: 'Terça-Feira', id: 2 },
-        { text: 'Quarta-Feira', id: 3 },
-        { text: 'Quinta-Feira', id: 4 },
-        { text: 'Sexta-Feira', id: 5 },
+        { text: 'Segunda-Feira', id: 'Segunda-Feira' },
+        { text: 'Terça-Feira', id: 'Terça-Feira' },
+        { text: 'Quarta-Feira', id: 'Quarta-Feira' },
+        { text: 'Quinta-Feira', id: 'Quinta-Feira' },
+        { text: 'Sexta-Feira', id: 'Sexta-Feira' },
     ]
 
     //Options preferência de contato
     const optionsPreferenciaContato = [
-        { text: 'E-mail', id: 1 },
-        { text: 'Fax', id: 2 },
-        { text: 'WhatsApp', id: 3 },
-        { text: 'Telefonema', id: 4 },
+        { text: 'E-mail', id: 'E-mail' },
+        { text: 'Fax', id: 'Fax' },
+        { text: 'WhatsApp', id: 'WhatsApp' },
+        { text: 'Telefonema', id: 'Telefonema' },
     ]
 
     //Options Telefone whatsapp
@@ -48,158 +53,139 @@ export function RegisterClient() {
         { text: 'Este número de telefone é do WhatsApp?', id: 1 },
     ]
 
+    //Options status da entrega
+    const optionsStatusEntrega = [
+        { text: 'Ativo', id: 1 },
+        { text: 'Inativo', id: 12 }
+    ]
+
     //Hora da entrega
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
-    //Pegando informações das inputs manualmente(retirar após utilizar Hook Form)
-    function handleSignIn() {
-        const data = {
-            nome,
-            sobrenome,
-            telefone,
-            email,
-            date,
-
-        }
-
-        console.log(data)
-    }
-
-
-
-    //-----------COMO ENVIAR PARA O FIREBASE
+    //Informações usuário
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [telefone, setTelefone] = useState('');
+    const [numeroTelefoneWhatsApp, setNumeroTelefoneWhatsApp] = useState('');
     const [email, setEmail] = useState('');
 
-    //Salvando estados, valores radio
-    const [diaEntrega, setDiaEntrega] = useState('');
-    const [horaEntrega, setHoraEntrega] = useState('');
-    const [estabelecimento, setEstabeleciomento] = useState('');
-    const [preferenciaContato, setPreferenciaContato] = useState('');
-    const [entregaRastreavel, setEntregaRastreavel] = useState('');
-    const [telefoneWhatsApp, setTelefoneWhatsApp] = useState<boolean>(false);
 
-    //----------------------------------------------------------------Retirar após hook form
-
-    //TESTE HOOK FORM ----------------------------------------------------------------------
-
-    type FormData = {
-        nome: string;
-        sobrenome: string;
-        telefone: string;
-        telefoneWhatsApp: string;
-        email: string;
+    const [telefoneWhatsApp, setTelefoneWhatsApp] = useState<Boolean>(false)
+    function confirmarWpp(data: any) {
+        if (data != 1) {
+            setTelefoneWhatsApp(false);
+        } else {
+            setTelefoneWhatsApp(true);
+        }
     }
-    const { control, handleSubmit } = useForm<FormData>();
-    const onSubmit = (data: FormData) => console.log(data);
 
+    const [diaEntrega, setDiaEntrega] = useState('');
+    function infoDiaEntrega(data: any) {
+        setDiaEntrega(data);
+    }
 
-    //-------------------------------------------------------------------Testehookform
+    const [tipoEstabelecimento, setTipoEstabelecimento] = useState('');
+    function infoEstabelecimento(data: any) {
+        setTipoEstabelecimento(`${data}`);
+    }
 
+    const [preferenciaContato, setPreferenciaContato] = useState('')
+    function infoPreferenciaContato(data: any) {
+        setPreferenciaContato(data);
+    }
+
+    const [statusEntrega, setStatusEntrega] = useState<Boolean>(false)
+    function infoStatus(data: any) {
+        if (data == 1) {
+            setStatusEntrega(true);
+        }
+    }
+
+    const [horaEntrega, setHoraEntrega] = useState('')
+    function infoHora(date) {
+        setHoraEntrega(`${date.getHours()}:${date.getMinutes()}`);
+    }
 
     function enviarForm() {
-        firestore().collection('dadosCliente').add({
-            nome: nome,
-            sobrenome: sobrenome,
-            telefone: telefone,
-            email: email,
-        })
+        if (nome.length 
+            || sobrenome.length
+            || email.length
+            || telefone.length 
+            || numeroTelefoneWhatsApp.length 
+            < 1) {
+            Alert.alert('Alguns campos precisam de atenção')
+        } else {
+            firestore()
+                .collection('dadosCliente')
+                .add({
+                    nome: nome,
+                    sobrenome: sobrenome,
+                    telefone: telefone,
+                    email: email,
+                    numeroTelefoneWhatsApp: numeroTelefoneWhatsApp,
+                    tipoEstabelecimento: tipoEstabelecimento,
+                    telefoneWhatsApp: telefoneWhatsApp,
+                    diaEntrega: diaEntrega,
+                    preferenciaContato: preferenciaContato,
+                    entregaRastreavel: entregaRastreavel,
+                    statusEntrega: statusEntrega,
+                    horaEntrega: horaEntrega
+
+                })
+                .then(() => {
+                    Alert.alert('Cadastrado com sucesso!', 'Cadastrado');
+                });
+
+        }
+
     }
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: cores.branco }}>
             <Text style={style.label}>Registrar</Text>
-
-            <Controller
-                control={control}
-                name="nome"
-                render={({ field: { value, onChange } }) => (
-
-                    <TextInput
-                        style={style.input}
-                        placeholder="Nome"
-                        value={value}
-                        onChangeText={onChange} />
-
-                )}
+            <TextInput
+                style={style.input}
+                placeholder="Nome"
+                onChangeText={(value: string) => setNome(value)}
             />
 
-            <Controller
-                control={control}
-                name="sobrenome"
-                render={({ field: { value, onChange } }) => (
+            <TextInput
+                style={style.input}
+                placeholder="Sobrenome"
+                onChangeText={(value: string) => setSobrenome(value)} />
 
-                    <TextInput
-                        style={style.input}
-                        placeholder="Sobrenome"
-                        value={value}
-                        onChangeText={onChange} />
-
-                )}
-            />
-
-            <Controller
-                control={control}
-                name="telefone"
-                render={({ field: { value, onChange } }) => (
-
-                    <TextInput
-                        style={style.input}
-                        placeholder="Telefone"
-                        value={value}
-                        keyboardType="numeric"
-                        onChangeText={onChange} />
-
-                )}
-            />
-
+            <TextInput
+                style={style.input}
+                placeholder="Telefone"
+                keyboardType="numeric"
+                onChangeText={(value: string) => setTelefone(value)} />
 
             <CheckBox
                 style={{ marginTop: 15 }}
                 options={optionsTelefoneWhatsApp}
-                onChange={op => setTelefoneWhatsApp(true)}
-                //onChange={op => setTelefoneWhatsApp(true) {(value:boolean)}}
+                onChange={(op: any) => confirmarWpp(op)}
                 multiple
             />
 
-            <Controller
-                control={control}
-                name="telefoneWhatsApp"
-                render={({ field: { value, onChange } }) => (
-
-                    <TextInput
-                        style={style.input}
-                        placeholder="Número de telefone do WhatsApp"
-                        value={value}
-                        keyboardType="numeric"
-                        onChangeText={onChange}
-                    />
-
-                )}
+            <TextInput
+                style={style.input}
+                placeholder="Número de telefone do WhatsApp"
+                keyboardType="numeric"
+                onChangeText={(value: string) => setNumeroTelefoneWhatsApp(value)}
             />
 
+            <TextInput
+                style={style.input}
+                placeholder="Email"
+                onChangeText={(value: string) => setEmail(value)} />
 
-            <Controller
-                control={control}
-                name="email"
-                render={({ field: { value, onChange } }) => (
 
-                    <TextInput
-                        style={style.input}
-                        placeholder="Email"
-                        value={value}
-                        onChangeText={onChange} />
 
-                )}
-            />
-            
             <Text style={style.txtRadio}>Dias para entrega</Text>
             <CheckBox
                 options={optionsCheckBox}
-                onChange={op => alert(op)}
+                onChange={(op: any) => infoDiaEntrega(op)}
                 multiple
             />
 
@@ -215,6 +201,7 @@ export function RegisterClient() {
                         onConfirm={(date) => {
                             setOpen(false)
                             setDate(date)
+                            infoHora(date)
                         }}
                         onCancel={() => {
                             setOpen(false)
@@ -226,32 +213,28 @@ export function RegisterClient() {
 
             <Text style={[style.txtRadio, { marginTop: 50 }]}>Preferência de contato</Text>
             <CheckBox
-                options={optionsPreferenciaContato} onChange={op => alert(op)}
+                options={optionsPreferenciaContato} onChange={(op: any) => infoPreferenciaContato(op)}
             />
 
             <Text style={style.txtRadio}>Tipo de estabelecimento</Text>
             <Radio
-                //##Tratar ambos valores do radio para enviar para o banco-------------------------------------------Tarefa
 
                 //posicao selecionada
                 selected={
                     selected
                 }
 
-
-                //Options recebe um array das informações
                 options={
                     ['Residencial', 'Comercial']
                 }
 
-                //Hoizontal recebe true
                 horizontal={
                     true
                 }
 
-                onChangeSelect={(opt, i) => {
-                    const optionSelected = (i)
+                onChangeSelect={(opt: any, i) => {
                     setSelected(i)
+                    infoEstabelecimento(opt)
                 }
                 } />
 
@@ -260,7 +243,6 @@ export function RegisterClient() {
                 <Switch
                     //Cor barrinha de trás
                     trackColor={{ false: cores.cinza, true: cores.cinza }}
-
                     //Cor bolinha da frente
                     thumbColor={!isEnabled ? cores.branco : cores.roxo}
                     onValueChange={alternarSwitch}
@@ -268,12 +250,18 @@ export function RegisterClient() {
                 />
             </View>
 
+            <Text style={[style.txtRadio, { marginTop: 25 }]}>Status da entrega</Text>
+            <CheckBox
+                options={optionsStatusEntrega} onChange={(op: any) => infoStatus(op)}
+            />
 
 
-
-            <TouchableOpacity style={style.button} onPress={handleSubmit(onSubmit)}
-            >
+            <TouchableOpacity style={style.button} onPress={enviarForm}>
                 <Text style={style.textButton}>Salvar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={style.buttonFechar} onPress={() => { navigation.goBack('client') }}>
+                <Text style={style.textButtonFechar} onPress={() => { navigation.goBack('client') }}>Fechar</Text>
             </TouchableOpacity>
         </ScrollView>
     )

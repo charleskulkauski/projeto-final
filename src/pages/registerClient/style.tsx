@@ -89,6 +89,26 @@ export default StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: cores.roxo,
-    }
+    },
+
+    buttonFechar:{
+        width: "90%",
+        height: 60,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginBottom: 20,
+        marginTop: 15,
+        borderRadius: 15,
+        backgroundColor: cores.roxo,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    textButtonFechar: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: cores.branco,
+    },
 })
 

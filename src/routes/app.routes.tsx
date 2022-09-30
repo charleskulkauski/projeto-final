@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -10,67 +10,72 @@ import { RegisterClient } from '../pages/registerClient/registerClient';
 import { cores } from '../pages/cliente/style';
 
 
-
-
-
-
-
-//Configurações de rotas
-
 //Botões de navegação parte de baixo
+const ClientStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-export function AppRoutes(){
-    return(
+export function AppRoutes() {
+    return (
         <NavigationContainer>
-            <Tab.Navigator screenOptions={{
-                tabBarActiveTintColor: cores.branco,
-                tabBarInactiveTintColor: cores.cinza,
-                tabBarActiveBackgroundColor: cores.branco,
-                tabBarInactiveBackgroundColor: cores.roxo,
+            <ClientStack.Navigator>
+            <ClientStack.Screen name="TabNavigation" component={TabNavigation} options={{headerShown: false}}/>
+            <ClientStack.Screen name="Clientes" component={Client} />
+            <ClientStack.Screen name="RegisterClient" component={RegisterClient}
+                options={{ title: 'Novo cliente', headerTintColor: cores.roxo }} />
+        </ClientStack.Navigator>
+        </NavigationContainer>
 
-                tabBarLabelStyle: {
-                    width: '100%',
-                    flex: 1,
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                    lineHeight: 21,
-                    marginTop: 3,
-                    paddingTop: 21,
-                    backgroundColor: cores.roxo,
-                },
-                tabBarStyle: {
-                    width: '100%',
-                    height: 70,
-                },
+    )
+}
 
-                tabBarIconStyle:{
-                    display:'none',
-                }
+export function TabNavigation(){
+    return(
+        <Tab.Navigator
+                screenOptions={{
+                    tabBarActiveTintColor: cores.branco,
+                    tabBarInactiveTintColor: cores.cinza,
+                    tabBarActiveBackgroundColor: cores.branco,
+                    tabBarInactiveBackgroundColor: cores.roxo,
+                    headerTintColor: cores.roxo,
+
+                    tabBarLabelStyle: {
+                        width: '100%',
+                        flex: 1,
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                        lineHeight: 21,
+                        marginTop: 3,
+                        paddingTop: 21,
+                        backgroundColor: cores.roxo,
+                    },
+                    tabBarStyle: {
+                        display: 'flex',
+                        width: '100%',
+                        height: 70,
+                    },
+
+                    tabBarIconStyle: {
+                        display: 'none',
+                    }
                 }}>
-                <Tab.Screen name="Cliente" component={ClientTabStack} 
-                options={{
-                    headerTransparent: true,
-                    headerShown: false,
-                }}/>
-                <Tab.Screen name="Sync" component={Sync}/>
+                <Tab.Screen name="Cliente" component={Client}/>
+                <Tab.Screen name="Sync" component={Sync} />
             </Tab.Navigator>
-            </NavigationContainer>
-
     )
 }
 
 //Navegação adicionar cliente
-const ClientStack = createStackNavigator();
 
-export function ClientTabStack(){
+const RegisterStack = createStackNavigator();
+export function RegisterTabStack() {
     return (
-        <ClientStack.Navigator>
-            <ClientStack.Screen name="Clientes" component={Client}/>
-            <ClientStack.Screen name="RegisterClient" component={RegisterClient} 
-            options={{title: 'Novo cliente', }}/>
-        </ClientStack.Navigator>
+        <RegisterStack.Navigator>
+                <RegisterStack.Screen name="Clientes" component={Client} />
+                <RegisterStack.Screen name="RegisterClient" component={RegisterClient}
+                    options={{ title: 'Novo cliente' }} />
+            </RegisterStack.Navigator>
     )
 }
+
 
 
 
